@@ -1,0 +1,25 @@
+name: Scheduled Merge
+
+on:
+  schedule:
+    - cron: '05:30 * * 4'  # Runs every Thursday at 00:00 UTC
+
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  merge-branches:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge branch
+        run: |
+          git checkout target-branch
+          git pull origin target-branch
+          git merge --no-ff source-branch -m "Auto-merged source-branch into target-branch"
+          git push origin target-branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
