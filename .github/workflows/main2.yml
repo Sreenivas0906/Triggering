@@ -1,0 +1,43 @@
+name: Auto Merge Branches
+
+on:
+  schedule:
+    - cron: '30 5 * * 4'  # Runs every Thursday at 5:30 AM UTC
+
+  workflow_dispatch:  # Allows manual trigger if needed
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Allows pushing changes
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "Sreenivas Reddy"
+          git config --global user.email "sreenuk0906@gmail.com"
+
+      - name: Fetch all branches
+        run: git fetch --all
+
+      - name: Switch to target branch
+        run: |
+          git checkout master  # Change to target branch
+          git pull origin master
+
+      - name: Merge source branch into target branch
+        run: |
+          git merge origin/development --no-edit  # Change "development" to your source branch
+        continue-on-error: true  # Prevents failure in case of conflicts
+
+      - name: Push changes
+        run: |
+          git push origin master  # Ensure correct target branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
