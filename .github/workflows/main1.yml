@@ -2,7 +2,7 @@ name: Auto Merge Branches
 
 on:
   schedule:
-    - cron: '0 12 * * 4'  # Runs every Thursday at 12:00 UTC
+    - cron: '05:30 * * 4'  # Runs every Thursday at 12:00 UTC
 
   workflow_dispatch:  # Allows manual trigger if needed
 
@@ -24,10 +24,10 @@ jobs:
 
       - name: Merge source branch into target branch
         run: |
-          git checkout master  # Target branch
+          git checkout Dev  # Target branch
           git pull origin Dev
           git merge origin/development  # Source branch (change as needed)
           git push origin master  # Push changes to target branch
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.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 }}
 
